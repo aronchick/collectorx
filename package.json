@@ -1,21 +1,25 @@
 {
-    "name": "app-service-hello-world",
-    "description": "Simple Hello World Node.js sample for Azure App Service",
+    "name": "collectorx",
+    "description": "CollectorX to NFT",
     "version": "0.0.1",
     "private": true,
     "license": "MIT",
-    "author": "Microsoft",
+    "author": "David Aronchick",
     "scripts": {
         "start": "node index.js",
-        "dev": "nodemon"
+        "dev": "nodemon",
+        "test": "mocha ./test/* --exit"
     },
     "dependencies": {
+        "chai": "^4.3.4",
         "ejs": "^3.0.1",
         "express": "^4.17.1",
         "nodemon": "^2.0.2"
     },
     "devDependencies": {
-        "gulp": "^4.0.2",
-        "gulp-imagemin": "^7.1.0"
+        "gulp": "^3.9.1",
+        "gulp-imagemin": "^8.0.0",
+        "mocha": "^9.1.3",
+        "supertest": "^6.1.6"
     }
 }
