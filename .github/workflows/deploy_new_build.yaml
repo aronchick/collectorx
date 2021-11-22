@@ -40,6 +40,8 @@ jobs:
         port: ${{ secrets.SSH_PORT }}
         script: |
           cd ~/collectorx
+          git reset --hard HEAD
+          git clean -f -d
           git pull origin main
           npm install --production -f
           pm2 restart index.js
