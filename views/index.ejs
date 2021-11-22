@@ -3,33 +3,85 @@
 
 <head>
   <title>Capture</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+  integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+  integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
   <link href="/css/main.css" rel="stylesheet" type="text/css">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta property="og:title" content="Haikus for Mona">
-  <meta property="og:description" content="Some of the best haikus you'll ever read about our rescue dog June">
-  <meta property="og:image" content="/images/sunlight.jpg">
+  <meta property="og:title" content="Capture and Upload">
+<script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 </head>
 
 <body>
   <h1>Capture</h1>
-  <div>
+  <div style="width:75%; height:75%;">
     <video id="player" controls autoplay></video>
-    <button id="capture">Capture</button>
-    <canvas id="canvas" width=320 height=240></canvas>
+  </div>
+  <div><div>
+    <button id="capture_image_button">Capture Image</button>
+</div>
+  <div>
+    <canvas id="canvas_image" width="160" height="120" ></canvas>
+  </div>
+</div>
+  <div>
+    <div>
+      <button id="capture_qr_button">Capture QR Code</button>
+    </div>
+    <div>
+      <canvas id="canvas_qr" width="160" height="120"></canvas>
+    </div>
+  </div>
+
+<div id="reader" width="600px" height="600px"></div>
     <script>
       const player = document.getElementById('player');
-      const canvas = document.getElementById('canvas');
-      const context = canvas.getContext('2d');
-      const captureButton = document.getElementById('capture');
+      const canvas_image = document.getElementById('canvas_image');
+      const context_image = canvas_image.getContext('2d');
+        const canvas_qr = document.getElementById('canvas_qr');
+        const context_qr = canvas_qr.getContext('2d');
+      const captureImageButton = document.getElementById('capture_image_button');
+        const captureQRButton = document.getElementById('capture_qr_button');
 
       const constraints = {
         video: true,
       };
 
-      captureButton.addEventListener('click', () => {
+      capture_image_button.addEventListener('click', () => {
         // Draw the video frame to the canvas.
-        context.drawImage(player, 0, 0, canvas.width, canvas.height);
+        context_image.drawImage(player, 0, 0, canvas_image.width, canvas_image.height);
       });
+
+        capture_qr_button.addEventListener('click', () => {
+          // Draw the video frame to the canvas.
+          context_qr.drawImage(player, 0, 0, canvas_qr.width, canvas_qr.height);
+        });
+
+      function onScanSuccess(decodedText, decodedResult) {
+        // handle the scanned code as you like, for example:
+        console.log(`Code matched = ${decodedText}`, decodedResult);
+      }
+
+      function onScanFailure(error) {
+        // handle scan failure, usually better to ignore and keep scanning.
+        // for example:
+        console.warn(`Code scan error = ${error}`);
+      }
+
+      const formatsToSupport = [
+        Html5QrcodeSupportedFormats.QR_CODE,
+        Html5QrcodeSupportedFormats.UPC_A,
+        Html5QrcodeSupportedFormats.UPC_E,
+        Html5QrcodeSupportedFormats.UPC_EAN_EXTENSION,
+        Html5QrcodeSupportedFormats.EAN_13,
+        Html5QrcodeSupportedFormats.EAN_8,
+      ];
+      let html5QrcodeScanner = new Html5QrcodeScanner(
+        "reader",
+        { fps: 10, qrbox: { width: 250, height: 250 }, formatsToSupport: formatsToSupport },
+      /* verbose= */ false);
+      html5QrcodeScanner.render(onScanSuccess, onScanFailure);
 
       // Attach the video stream to the video element and autoplay.
       navigator.mediaDevices.getUserMedia(constraints)
@@ -37,6 +89,5 @@
           player.srcObject = stream;
         });
     </script>
-  </div>
 
 </html>
