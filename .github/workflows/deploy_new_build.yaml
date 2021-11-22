@@ -41,5 +41,5 @@ jobs:
         script: |
           cd ~/collectorx
           git pull origin main
-          npm install --production
-          pm2 restart node-app
+          npm install --production -f
+          pm2 restart index.js

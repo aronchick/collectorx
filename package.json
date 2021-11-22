@@ -21,5 +21,8 @@
         "gulp-imagemin": "^8.0.0",
         "mocha": "^9.1.3",
         "supertest": "^6.1.6"
+    },
+    "optionalDependencies": {
+        "fsevents": "^2.3.2"
     }
 }
