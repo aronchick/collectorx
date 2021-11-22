@@ -38,4 +38,4 @@ jobs:
         username: ${{ secrets.SSH_USERNAME }}
         key: ${{ secrets.SSH_KEY }}
         port: ${{ secrets.SSH_PORT }}
-        script: /home/nodejs/deploy.sh
+        script: 'bash -i -c -t "/home/nodejs/deploy.sh"'
