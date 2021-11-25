@@ -1,4 +1,4 @@
-import { Web3Storage } from "web3.storage";
+import Web3Storage from "web3.storage";
 
 import {
   showMessage,
@@ -6,17 +6,37 @@ import {
   jsonFile,
   getSavedToken,
   makeGatewayURL,
-} from "./helpers";
+} from "./helpers.js";
 
 ////////////////////////////////
 ////// Image upload & listing
 ////////////////////////////////
 
+// #region dataURLtoFile
+
+/**
+ * convert dataurl to file
+ * @ param {string} dataurl - dataurl address
+ * @ param {string} file name - file name
+ */
+export async function dataURLtoFile(dataUrl, fileName) {
+  var arr = dataUrl.split(","),
+    mime = arr[0].match(/:(.*?);/)[1],
+    bstr = atob(arr[1]),
+    n = bstr.length,
+    u8arr = new Uint8Array(n);
+  while (n--) {
+    u8arr[n] = bstr.charCodeAt(n);
+  }
+  return new File([u8arr], fileName, { type: mime });
+}
+
+// #endregion dataURLtoFile
+
 // #region storeImage
 
 // We use this to identify our uploads in the client.list response.
 const namePrefix = "ImageGallery";
-
 /**
  * Stores an image file on Web3.Storage, along with a small metadata.json that includes a caption & filename.
  * @param {File} imageFile a File object containing image data
@@ -31,7 +51,14 @@ const namePrefix = "ImageGallery";
  *
  * @returns {Promise<StoreImageResult>} an object containing links to the uploaded content
  */
-export async function storeImage(imageFile, caption) {
+export async function storeImage() {
+  const imageDataUrl = document.getElementById("canvas_image").toDataURL();
+  const type = document.getElementById("qrContentFormat").value;
+  const value = document.getElementById("qrContentValue").value;
+  const previous_owner = "";
+  const new_owner = document.getElementById("newOwner").value;
+  const iso_date = document.getElementById("qrContentDate").value;
+
   // The name for our upload includes a prefix we can use to identify our files later
   const uploadName = [namePrefix, caption].join("|");
 
@@ -39,20 +66,19 @@ export async function storeImage(imageFile, caption) {
   // The metadata includes the file path, which we can use to generate
   // a URL to the full image.
   const metadataFile = jsonFile("metadata.json", {
-    path: imageFile.name,
-    caption,
+    type: type,
+    value: value,
+    timestamp: iso_date,
+    previous_owner: previous_owner,
+    new_owner: new_owner,
   });
 
-  const token = getSavedToken();
-  if (!token) {
-    showMessage(
-      "> ❗️ no API token found for Web3.Storage. You can add one in the settings page!"
-    );
-    showLink(`${location.protocol}//${location.host}/settings.html`);
-    return;
-  }
+  const token = process.env.web3_token;
   const web3storage = new Web3Storage({ token });
   showMessage(`> 🤖 calculating content ID for ${imageFile.name}`);
+
+  imageFile = dataURLtoFile(dataUrl, uuidv4());
+
   const cid = await web3storage.put([imageFile, metadataFile], {
     // the name is viewable at https://web3.storage/files and is included in the status and list API responses
     name: uploadName,
@@ -163,3 +189,7 @@ export async function validateToken(token) {
   }
 }
 // #endregion validateToken
+
+const send_value_button = document.getElementById("send_value_button");
+
+send_value_button.addEventListener("click", storeImage);
