@@ -9,6 +9,9 @@ const app = express(),
   HTML_FILE = path.join(DIST_DIR, "index.html"),
   compiler = webpack(config);
 
+app.set("views", "../views");
+app.set("view engine", "ejs");
+
 app.use(
   webpackDevMiddleware(compiler, {
     publicPath: config.output.publicPath,
@@ -16,16 +19,10 @@ app.use(
 );
 
 app.use(webpackHotMiddleware(compiler));
-app.get("*", (req, res, next) => {
-  compiler.outputFileSystem.readFile(HTML_FILE, (err, result) => {
-    if (err) {
-      return next(err);
-    }
-    res.set("content-type", "text/html");
-    res.send(result);
-    res.end();
-  });
+app.get("/", function (req, res) {
+  res.render("capture", {});
 });
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`App listening to ${PORT}....`);

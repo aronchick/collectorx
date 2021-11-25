@@ -7,7 +7,6 @@ var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 
 var captureRouter = require("./routes/capture");
-var uploadRouter = require("./routes/upload");
 
 var fs = require("fs");
 const port = process.env.PORT || 3000;
@@ -25,7 +24,6 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/", captureRouter);
-app.use("/upload", uploadRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

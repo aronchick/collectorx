@@ -1,5 +1,4 @@
-import Web3Storage from "web3.storage";
-
+import { Web3Storage } from "web3.storage";
 import {
   showMessage,
   showLink,
