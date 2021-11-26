@@ -1,4 +1,5 @@
 import { Web3Storage } from "web3.storage";
+import { v4 as uuid } from "uuid";
 import {
   showMessage,
   showLink,
@@ -59,7 +60,7 @@ export async function storeImage() {
   const iso_date = document.getElementById("qrContentDate").value;
 
   // The name for our upload includes a prefix we can use to identify our files later
-  const uploadName = [namePrefix, caption].join("|");
+  const uploadName = [namePrefix, "img-name-" + uuid()].join("|");
 
   // We store some metadata about the image alongside the image file.
   // The metadata includes the file path, which we can use to generate
@@ -72,11 +73,12 @@ export async function storeImage() {
     new_owner: new_owner,
   });
 
-  const token = process.env.web3_token;
+  const token =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDE5NjE5Qjg5Qzg5ODA0ZmZBNmIyQUE5RjQyZDk4OTMxNENjMGMxMzMiLCJpc3MiOiJ3ZWIzLXN0b3JhZ2UiLCJpYXQiOjE2Mzc2MzI4MDM2NjcsIm5hbWUiOiJjb2xsZWN0b3J4X3Rva2VuIn0.OQWrIlW-HeUxb_K0uRuPRLaEwymzVa7uwoqR0MjFyh8";
   const web3storage = new Web3Storage({ token });
-  showMessage(`> 🤖 calculating content ID for ${imageFile.name}`);
+  showMessage(`> 🤖 calculating content ID for ${uploadName}`);
 
-  imageFile = dataURLtoFile(dataUrl, uuidv4());
+  var imageFile = await dataURLtoFile(imageDataUrl, uuid());
 
   const cid = await web3storage.put([imageFile, metadataFile], {
     // the name is viewable at https://web3.storage/files and is included in the status and list API responses
@@ -94,8 +96,8 @@ export async function storeImage() {
   });
 
   const metadataGatewayURL = makeGatewayURL(cid, "metadata.json");
-  const imageGatewayURL = makeGatewayURL(cid, imageFile.name);
-  const imageURI = `ipfs://${cid}/${imageFile.name}`;
+  const imageGatewayURL = makeGatewayURL(cid, uploadName);
+  const imageURI = `ipfs://${cid}/${uploadName}`;
   const metadataURI = `ipfs://${cid}/metadata.json`;
   return { cid, metadataGatewayURL, imageGatewayURL, imageURI, metadataURI };
 }
