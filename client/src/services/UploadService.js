@@ -2,10 +2,10 @@ import axios from "axios"
 
 let baseOptions = {
   // `url` is the server URL that will be used for the request
-  url: '/events',
+  url: '/upload',
 
   // `method` is the request method to be used when making the request
-  method: 'get', // default
+  method: 'post', // default
 
   // `baseURL` will be prepended to `url` unless `url` is absolute.
   // It can be convenient to set `baseURL` for an instance of axios to pass relative URLs
@@ -30,7 +30,7 @@ let baseOptions = {
 const axios_instance = axios.create(baseOptions)
 
 export default {
-  async getEvents() {
+  async uploadImages() {
     let res = await axios_instance.get("/events");
     return res.data;
   },

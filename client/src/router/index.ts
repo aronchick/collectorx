@@ -25,5 +25,11 @@ export default new Router({
       component: () => import('../views/EventSingle.vue'),
       beforeEnter: authGuard,
     },
+    {
+      path: '/capture',
+      name: 'capture',
+      component: () => import('../views/Capture.vue'),
+      beforeEnter: authGuard,
+    },
   ],
 });

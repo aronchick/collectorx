@@ -32,7 +32,9 @@
 </template>
 <script lang="ts">
 import EventService from '../services/EventService.js';
-export default {
+import Vue from 'vue';
+          
+export default Vue.extend({
   name: 'EventSingle',
   data() {
     // NEW - initialize the event object
@@ -43,19 +45,20 @@ export default {
   created() {
     this.getEventData(); // NEW - call getEventData() when the instance is created
   },
-methods: {
-  async getEventData() {
-    // Get the access token from the auth wrapper
-    const accessToken = await this.$auth.getTokenSilently()
+  methods: {
+    async getEventData() {
+      // Get the access token from the auth wrapper
+      const accessToken = await this.$auth.getTokenSilently()
 
-    // Use the eventService to call the getEventSingle method
-    EventService.getEventSingle(this.$route.params.id, accessToken)
-    .then(
-      (event => {
-        this.$set(this, "event", event);
-      }).bind(this)
-    );
+      // Use the eventService to call the getEventSingle method
+      EventService.getEventSingle(this.$route.params.id, accessToken)
+      .then(
+        (event => {
+          this.$set(this, "event", event);
+        }).bind(this)
+      );
+    }
   }
-}
-}
+});
+
 </script>
