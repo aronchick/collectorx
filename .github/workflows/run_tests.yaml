@@ -20,8 +20,9 @@ jobs:
         working-directory: ./client
         run: |
           nvm install
-          npm install -f
-          npm test
+          npm install pnpm
+          pnpm install -f
+          pnpm test:unit
         env:
           CI: true
       - name: npm install and test server
@@ -29,7 +30,8 @@ jobs:
         working-directory: ./server
         run: |
           nvm install
-          npm install -f
-          npm test
+          npm install pnpm
+          pnpm install -f
+          pnpm test
         env:
           CI: true
