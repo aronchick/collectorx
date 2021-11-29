@@ -6,30 +6,26 @@ on:
       - main
 jobs:
   test:
-
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [16.x]
-
     steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
-    - name: npm install and test client
-      run: |
-        cd client
-        npm install -f
-        npm test
-      env:
-        CI: true
-    - name: npm install and test server
-      run: |
-        cd ../server
-        npm install -f
-        npm test
-      env:
-        CI: true
+      - uses: actions/checkout@v2
+      - name: install nvm
+        run: |
+          curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+      - name: npm install and test client
+        working-directory: ./client
+        run: |
+          nvm install
+          npm install -f
+          npm test
+        env:
+          CI: true
+      - name: npm install and test server
+        working-directory: ./server
+        run: |
+          nvm install
+          npm install -f
+          npm test
+        env:
+          CI: true
