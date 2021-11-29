@@ -14,8 +14,9 @@ jobs:
         run: |
           curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
           export NVM_DIR="$HOME/.nvm"
-          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+          echo "source $NVM_DIR/nvm.sh --install" >> "$HOME/.bash_profile"
       - name: npm install and test client
+        shell: bash -l {0}
         working-directory: ./client
         run: |
           nvm install
@@ -24,6 +25,7 @@ jobs:
         env:
           CI: true
       - name: npm install and test server
+        shell: bash -l {0}
         working-directory: ./server
         run: |
           nvm install
