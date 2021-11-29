@@ -28,7 +28,7 @@ jobs:
         CI: true
     - name: npm install and test server
       run: |
-        cd server
+        cd ../server
         npm install -f
         npm test
       env:
