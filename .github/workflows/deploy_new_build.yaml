@@ -3,10 +3,9 @@ name: Node Github CI
 on:
   create:
     tags:
-       - '*'
+      - "*"
 jobs:
   test:
-
     runs-on: ubuntu-latest
 
     strategy:
@@ -14,36 +13,46 @@ jobs:
         node-version: [16.x]
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
-    - name: npm install and test client
-      run: |
-        cd client
-        npm install -f
-        npm test
-      env:
-        CI: true
-    - name: npm install and test server
-      run: |
-        cd ../server
-        npm install -f
-        npm test
-      env:
-        CI: true
+      - uses: actions/checkout@v2
+      - name: install nvm
+        run: |
+          curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+          export NVM_DIR="$HOME/.nvm"
+          echo "source $NVM_DIR/nvm.sh --install" >> "$HOME/.bash_profile"
+      # - name: Setup tmate session
+      #   uses: mxschmitt/action-tmate@v3
+      - name: npm install and test client
+        working-directory: ./client
+        run: |
+          source ~/.bashrc
+          nvm install
+          npm install pnpm -g
+          pnpm install -f
+          pnpm run build
+          pnpm test:unit
+        env:
+          CI: true
+      - name: npm install and test server
+        working-directory: ./server
+        run: |
+          source ~/.bashrc
+          nvm install
+          npm install pnpm -g
+          pnpm install -f
+          pnpm test
+        env:
+          CI: true
 
   deploy:
     needs: [test]
     runs-on: ubuntu-latest
 
     steps:
-    - name: SSH and deploy node app
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.SSH_HOST }}
-        username: ${{ secrets.SSH_USERNAME }}
-        key: ${{ secrets.SSH_KEY }}
-        port: ${{ secrets.SSH_PORT }}
-        script: 'bash -i -c -t "/home/nodejs/deploy.sh"'
+      - name: SSH and deploy node app
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: 'bash -i -c -t "/home/nodejs/deploy.sh"'
