@@ -3,12 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
+    "serve": "vue-cli-service serve --port $PORT",
     "build": "vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",
     "test:e2e": "vue-cli-service test:e2e",
     "lint": "vue-cli-service lint",
-    "prodserve": "HOST='0.0.0.0' PORT=8000 npm run prod"
+    "prodserve": "HOST='0.0.0.0' PORT=8181 npm run serve"
   },
   "dependencies": {
     "@auth0/auth0-spa-js": "^1.19.2",
