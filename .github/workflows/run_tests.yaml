@@ -18,23 +18,27 @@ jobs:
           curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
           export NVM_DIR="$HOME/.nvm"
           echo "source $NVM_DIR/nvm.sh --install" >> "$HOME/.bash_profile"
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
+      # - name: Setup tmate session
+      #   uses: mxschmitt/action-tmate@v3
       - name: npm install and test client
         working-directory: ./client
         run: |
+          source ~/.bashrc
           nvm install
-          npm install pnpm
+          npm install pnpm -g
           pnpm install -f
+          pnpm run build
           pnpm test:unit
         env:
           CI: true
       - name: npm install and test server
         working-directory: ./server
         run: |
+          source ~/.bashrc
           nvm install
-          npm install pnpm
+          npm install pnpm -g
           pnpm install -f
+          pnpm run build
           pnpm test
         env:
           CI: true
