@@ -38,7 +38,6 @@ jobs:
           nvm install
           npm install pnpm -g
           pnpm install -f
-          pnpm run build
           pnpm test
         env:
           CI: true
